@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="unisinos.mapapp.MainActivity$PlaceholderFragment"
+    android:background="#FFFFFF"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/station_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/near_station_label"
+        style="@style/Base.TextAppearance.AppCompat.Widget.ActionMode.Title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/station"
+        android:layout_marginStart="30dp"
+        android:layout_below="@+id/station_label"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/map_text"
+        android:layout_alignBottom="@+id/station"
+        android:layout_toEndOf="@+id/station"
+        android:layout_marginStart="17dp"
+        android:layout_marginBottom="1dp"
+        android:layout_alignParentEnd="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/map_message"
+        android:layout_marginStart="30dp"
+        android:layout_below="@+id/station"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:onClick="startNavigation"
+        android:nestedScrollingEnabled="false"
+        android:background="#286090"
+        android:textColor="#FFFFFF" />
+
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:id="@+id/spinner"
+        android:layout_marginBottom="126dp"
+        android:spinnerMode="dialog"
+        android:clickable="true"
+        android:layout_above="@+id/button"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Sector"
+        android:id="@+id/textView"
+        android:layout_above="@+id/spinner"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="21dp" />
+
+</RelativeLayout>

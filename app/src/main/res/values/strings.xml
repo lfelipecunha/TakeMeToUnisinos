@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Take Me To Unisinos</string>
+    <string name="title_activity_main">Take Me To Unisinos</string>
+
+    <string name="title_section1">Start</string>
+    <string name="title_section2">Map</string>
+    <string name="title_section3">Train</string>
+    <string name="title_train">Train Schedule</string>
+    <string name="title_section4">UNISINOS Bus</string>
+    <string name="title_bus">Bus Schedule</string>
+    <string name="start">Start</string>
+    <string name="near_station_label">Nearest Station:</string>
+    <string name="near_unisinos_station_title">Hey!!</string>
+    <string name="near_unisinos_message">You should get off at the next station</string>
+</resources>
