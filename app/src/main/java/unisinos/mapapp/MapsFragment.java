@@ -68,6 +68,11 @@ public class MapsFragment extends Fragment {
 
     public void setArriveTime(MyTime finalTime, MyTime arriveAtUnisinos, MyTime nextBus) {
         TextView message = (TextView)getActivity().findViewById(R.id.map_message);
+        if (message == null) {
+            return;
+        }
+
+
         String msg = "";
 
         if (finalTime != null) {
@@ -85,6 +90,14 @@ public class MapsFragment extends Fragment {
 
 
         message.setText(msg);
+        TextView title = (TextView)getActivity().findViewById(R.id.expectations);
+        if (title != null) {
+            if (msg.equals("")) {
+                title.setText("");
+            } else {
+                title.setText("Expected times:");
+            }
+        }
     }
 
     @Override

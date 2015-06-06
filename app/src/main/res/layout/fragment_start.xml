@@ -24,7 +24,16 @@
         android:layout_marginStart="30dp"
         android:layout_below="@+id/station_label"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="26dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/expectations"
+        android:layout_below="@+id/station"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,20 +41,17 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/map_text"
         android:layout_alignBottom="@+id/station"
-        android:layout_toEndOf="@+id/station"
-        android:layout_marginStart="17dp"
-        android:layout_marginBottom="1dp"
-        android:layout_alignParentEnd="false" />
+        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/station" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/map_message"
-        android:layout_marginStart="30dp"
-        android:layout_below="@+id/station"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="30dp" />
+        android:layout_above="@+id/textView"
+        android:layout_alignStart="@+id/station"
+        android:layout_below="@+id/expectations" />
 
     <Button
         android:layout_width="fill_parent"
