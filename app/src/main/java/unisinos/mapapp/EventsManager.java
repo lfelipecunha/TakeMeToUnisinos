@@ -171,7 +171,7 @@ public class EventsManager {
             step = AT_UNISINOS_STATION;
         } else if (step == AT_UNISINOS_STATION && distance > 50) {
             step = ON_BUS;
-        } else if (step == ON_BUS && busStation != null && busStation.getDistance(currentPosition) <= 60) {
+        } else if (step == ON_BUS && busStation != null && busStation.getDistance(currentPosition) <= 200) {
             notifyUser(
                 "Hey",
                 "You have to get off at the next station!"
