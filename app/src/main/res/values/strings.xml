@@ -9,8 +9,18 @@
     <string name="title_train">Train Schedule</string>
     <string name="title_section4">UNISINOS Bus</string>
     <string name="title_bus">Bus Schedule</string>
-    <string name="start">Start</string>
     <string name="near_station_label">Nearest Station:</string>
     <string name="near_unisinos_station_title">Hey!!</string>
-    <string name="near_unisinos_message">You should get off at the next station</string>
+    <string name="near_unisinos_message">You have to get off at the next station!</string>
+    <string name="near_bus_station_title">Hey!!</string>
+    <string name="near_bus_message">You have to get off at the next station!</string>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
+    <string name="next_train">Next train: %s</string>
+    <string name="expected_time_station">At UNISINOS station: %s</string>
+    <string name="expected_time_get_bus">To get BUS: %s</string>
+    <string name="expected_time_unisinos">At UNISINOS: %s</string>
+    <string name="schedule_station_title">Schedule of %s Station</string>
+    <string name="expected_title">Expected Times:</string>
+    <string name="title_activity_splash_screen">Take Me To Unisinos</string>
 </resources>

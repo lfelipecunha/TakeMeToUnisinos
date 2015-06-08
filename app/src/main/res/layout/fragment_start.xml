@@ -8,83 +8,91 @@
     tools:context="unisinos.mapapp.MainActivity$PlaceholderFragment"
     android:background="#FFFFFF"
     android:clickable="true">
-
-    <TextView
-        android:id="@+id/station_label"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/near_station_label"
-        style="@style/Base.TextAppearance.AppCompat.Widget.ActionMode.Title" />
+        android:layout_alignParentStart="true">
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/station_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/near_station_label"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/station"
-        android:layout_marginStart="30dp"
-        android:layout_below="@+id/station_label"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="26dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/station"
+                android:layout_marginStart="30dp"
+                android:layout_below="@+id/station_label"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="26dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/expectations"
-        android:layout_below="@+id/station"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentStart="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/map_text"
+                android:layout_alignBottom="@+id/station"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/station" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/map_text"
-        android:layout_alignBottom="@+id/station"
-        android:layout_marginLeft="10dp"
-        android:layout_toEndOf="@+id/station" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/expectations"
+                android:layout_below="@+id/station"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentStart="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/map_message"
-        android:layout_above="@+id/textView"
-        android:layout_alignStart="@+id/station"
-        android:layout_below="@+id/expectations" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/map_message"
+                android:layout_alignStart="@+id/station"
+                android:layout_below="@+id/expectations"
+                android:layout_marginTop="26dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Sector"
+                android:id="@+id/textView"
+                android:layout_below="@+id/map_message"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="26dp" />
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:id="@+id/spinner"
+                android:spinnerMode="dialog"
+                android:clickable="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textView"/>
+        </RelativeLayout>
+    </ScrollView>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/start"
+        android:text="@string/button_start"
         android:id="@+id/button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:clickable="true"
-        android:onClick="startNavigation"
+        android:onClick="toggleNavigation"
         android:nestedScrollingEnabled="false"
         android:background="#286090"
         android:textColor="#FFFFFF" />
 
-    <Spinner
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:id="@+id/spinner"
-        android:layout_marginBottom="126dp"
-        android:spinnerMode="dialog"
-        android:clickable="true"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Sector"
-        android:id="@+id/textView"
-        android:layout_above="@+id/spinner"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="21dp" />
 
 </RelativeLayout>

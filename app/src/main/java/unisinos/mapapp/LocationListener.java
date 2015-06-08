@@ -22,12 +22,8 @@ public class LocationListener implements OnMyLocationChangeListener {
 
     LatLng lastPos;
 
-    MapsFragment mapsFragment;
-
-    public LocationListener(GoogleMap map, MapsFragment fragment) {
+    public LocationListener(GoogleMap map) {
         googleMap = map;
-
-        mapsFragment = fragment;
     }
 
     @Override

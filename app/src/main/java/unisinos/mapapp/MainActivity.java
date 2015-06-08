@@ -3,6 +3,7 @@ package unisinos.mapapp;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
@@ -15,12 +16,13 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -40,6 +42,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     private Station currentStation;
+
+
+    public MainActivity() {
+        EventsManager.getInstance().setActivity(this);
+    }
 
 
     /**
@@ -90,6 +97,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+        buttonInit();
+        sectorInit();
     }
 
 
@@ -200,6 +209,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             "Sector E", "Sector F", "Sector G", "Sector H", "Sector I", "Sector J",
                             "Sector K", "Sector L", "Sector M"};
                     Spinner s = (Spinner) rootView.findViewById(R.id.spinner);
+
                     ArrayAdapter adapter = new ArrayAdapter(rootView.getContext(),
                             android.R.layout.simple_spinner_item, array_spinner);
                     s.setAdapter(adapter);
@@ -212,33 +222,54 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public void onResume() {
             super.onResume();
 
+            ((MainActivity) getActivity()).buttonInit();
+            ((MainActivity) getActivity()).sectorInit();
+            EventsManager.getInstance().setArriveTime();
+
         }
     }
 
 
 
-    public void startNavigation(View v) {
-        EventsManager.getInstance().start();
+    public void toggleNavigation(View v) {
+        EventsManager eventsManager = EventsManager.getInstance();
+        eventsManager.toggle();
+        buttonInit();
+    }
+
+    public void buttonInit(){
+        EventsManager eventsManager = EventsManager.getInstance();
+        Button button = (Button) findViewById(R.id.button);
+        Log.e("BUTTON_INIT", "INIT");
+        if (button == null) {
+            Log.e("BUTTON_INIT", "VIEW NOT EXISTS");
+            return;
+        }
+
+
+        if (eventsManager.getStep() == EventsManager.WAITING) {
+            button.setText(R.string.button_start);
+            button.setBackgroundResource(R.drawable.button_start);
+        } else {
+            button.setText(R.string.button_stop);
+            button.setBackgroundResource(R.drawable.button_stop);
+        }
     }
 
     public void loadSchedule(View v, int tableId, int titleId, Station station) {
-        Log.e("MAIN", "Table ID: "+ tableId + "Title ID: " + titleId);
         if (station == null) {
-            Log.e("MAIN", "STATION IS NULL");
             return;
         }
         TableLayout tableLayout = (TableLayout)v.findViewById(tableId);
         TextView title = (TextView)v.findViewById(titleId);
         if (tableLayout == null) {
-            Log.e("MAIN", "TABLE IS NULL");
             return;
         }
 
         if (title == null ) {
-            Log.e("MAIN", "TITLE IS NULL");
             return;
         }
-        title.setText("Schedule of " + station.getName() + " Station");
+        title.setText(String.format(getResources().getString(R.string.schedule_station_title), station.getName()));
         ArrayList<MyTime> list = station.getTimeSchedule();
         int i = 0;
         TableRow aux = null;
@@ -246,19 +277,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
         params.weight = 1;
 
-        for (MyTime t : list) {
-            if (i%3==0) {
-                if (aux != null) {
-                    tableLayout.addView(aux);
+        if (list != null) {
+            for (MyTime t : list) {
+                if (i % 3 == 0) {
+                    if (aux != null) {
+                        tableLayout.addView(aux);
+                    }
+                    aux = new TableRow(this);
                 }
-                aux = new TableRow(this);
-            }
-            TextView hour = new TextView(this);
-            hour.setText(t.toString());
-            hour.setLayoutParams(params);
+                TextView hour = new TextView(this);
+                hour.setText(t.toString());
+                hour.setLayoutParams(params);
 
-            aux.addView(hour);
-            i++;
+                aux.addView(hour);
+                i++;
+            }
         }
     }
 
@@ -266,5 +299,55 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         currentStation = s;
     }
 
+    public void sectorInit() {
+        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        if (spinner != null) {
+            spinner.setSelection(EventsManager.getInstance().getSectorPos());
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Log.e("MAIN", "SPINNER POSITION " + position);
+                    EventsManager.getInstance().setSectorPos(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        }
+    }
+
+    public void setArriveTime(MyTime finalTime, MyTime arriveAtUnisinos, MyTime nextBus) {
+        TextView message = (TextView)findViewById(R.id.map_message);
+        if (message == null) {
+            return;
+        }
+
+
+        String msg = "";
+
+        if (finalTime != null) {
+
+            if (arriveAtUnisinos != null) {
+                msg += String.format(getResources().getString(R.string.expected_time_station), arriveAtUnisinos) + "\n";
+            }
+
+            if (nextBus != null) {
+                msg += String.format(getResources().getString(R.string.expected_time_get_bus), nextBus) + "\n";
+            }
+            msg += String.format(getResources().getString(R.string.expected_time_unisinos), finalTime);
+        }
+
+
+        message.setText(msg);
+        TextView title = (TextView)findViewById(R.id.expectations);
+        if (title != null) {
+            if (msg.equals("")) {
+                title.setText("");
+            } else {
+                title.setText(getResources().getString(R.string.expected_title));
+            }
+        }
+    }
 
 }

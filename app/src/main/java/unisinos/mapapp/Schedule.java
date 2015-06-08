@@ -1,5 +1,7 @@
 package unisinos.mapapp;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -79,11 +81,12 @@ public class Schedule {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+        Log.e("DAY", "" + dayOfWeek);
         ArrayList<MyTime> times;
 
-        if (dayOfWeek == 0) {
+        if (dayOfWeek == 1) {
             times = schedule.get("sunday");
-        } else if (dayOfWeek == 6) {
+        } else if (dayOfWeek == 7) {
             times = schedule.get("saturday");
         } else {
             times = schedule.get("week");

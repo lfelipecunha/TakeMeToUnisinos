@@ -42,7 +42,7 @@ public class MapsFragment extends Fragment {
         e.setMap(googleMap);
         e.setFragment(this);
 
-        googleMap.setOnMyLocationChangeListener(new LocationListener(googleMap, this));
+        googleMap.setOnMyLocationChangeListener(new LocationListener(googleMap));
 
         return v;
     }
@@ -64,40 +64,6 @@ public class MapsFragment extends Fragment {
         }
 
         ((MainActivity)getActivity()).setStation(station);
-    }
-
-    public void setArriveTime(MyTime finalTime, MyTime arriveAtUnisinos, MyTime nextBus) {
-        TextView message = (TextView)getActivity().findViewById(R.id.map_message);
-        if (message == null) {
-            return;
-        }
-
-
-        String msg = "";
-
-        if (finalTime != null) {
-
-            if (arriveAtUnisinos != null) {
-                msg += "Expected arrive at station: " + arriveAtUnisinos + "\n";
-            }
-
-            if (nextBus != null) {
-                msg += "Expected time to get bus: " + nextBus + "\n";
-            }
-
-            msg += "Expected arrive at Unisinos: "+ finalTime;
-        }
-
-
-        message.setText(msg);
-        TextView title = (TextView)getActivity().findViewById(R.id.expectations);
-        if (title != null) {
-            if (msg.equals("")) {
-                title.setText("");
-            } else {
-                title.setText("Expected times:");
-            }
-        }
     }
 
     @Override

@@ -1,7 +1,5 @@
 package unisinos.mapapp;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
@@ -36,29 +34,24 @@ public class BusStation extends Station{
             LatLng currentPos = route.get(i);
 
             if (PolyUtil.isLocationOnPath(getPosition(), aux, false, 10)) {
-                Log.e("BUSSTATION", "NextPoint is BUS Station");
                 currentPos = getPosition();
                 hasToBreak = true;
             }
 
             if (start) {
-                Log.e("BUSSTATION", "Adding current distance");
                 distance += SphericalUtil.computeDistanceBetween(pos1, currentPos);
             }
 
             if (!start && PolyUtil.isLocationOnPath(pos, aux, false, 10)) {
-                Log.e("BUSSTATION", "Passed POINT is the ROUTE");
                 start = true;
                 distance += SphericalUtil.computeDistanceBetween(pos, route.get(i));
             }
 
             if (hasToBreak) {
-                Log.e("BUSSTATION", "BREAKING");
                 break;
             }
             pos1 = route.get(i);
         }
-        Log.e("BUSSTATION", "DISTANCE: " + distance);
         return distance;
     }
 

@@ -7,17 +7,14 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Spinner;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -31,8 +28,8 @@ public class EventsManager {
 
     private static final double MINIMUN_DISTANCE = 500;
 
-    private static final int WAITING = 0;
-    private static final int START = 1;
+    public static final int WAITING = 0;
+    public static final int START = 1;
     private static final int FIRST_STATION = 2;
     private static final int NEAR_UNISINOS_STATION = 4;
     private static final int AT_UNISINOS_STATION = 5;
@@ -50,8 +47,6 @@ public class EventsManager {
         }
         return EventsManager.instance;
     }
-
-    private int step;
 
     private ArrayList<Station> stations;
     private ArrayList<BusStation> busStations;
@@ -71,10 +66,12 @@ public class EventsManager {
     private MyTime arriveAtUniStation;
     private MyTime nextBus;
 
+    private MainActivity mainActivity;
+
     private EventsManager() {
         unisinosStation = new UnisinosStation();
 
-        stations = new ArrayList<Station>();
+        stations = new ArrayList<>();
         stations.add(new Station("Mercado", -30.0263442, -51.2286169, 0, Station.STATION_FROM_MERCADO));
         stations.add(new Station("Rodoviária", -30.0225466, -51.2196396, 2, Station.STATION_FROM_MERCADO));
         stations.add(new Station("São Pedro", -30.0061734,-51.2096603, 5, Station.STATION_FROM_MERCADO));
@@ -113,9 +110,10 @@ public class EventsManager {
 
         TrainSchedule.loadSchedules();
         BusSchedule.loadSchedules();
+    }
 
-
-        step = EventsManager.WAITING;
+    public void setActivity(MainActivity activity) {
+        mainActivity = activity;
     }
 
     public void setMap(GoogleMap m) {
@@ -123,58 +121,91 @@ public class EventsManager {
         putMarkers();
     }
 
+    public int getStep() {
+        int step;
+        SharedPreferences sharedPreferences = getSharedPreferences();
+        step = sharedPreferences.getInt("step", WAITING);
+        return step;
+    }
+
+    public SharedPreferences getSharedPreferences() {
+        return mainActivity.getPreferences(Context.MODE_PRIVATE);
+    }
+
+    public void setStep(int s) {
+        SharedPreferences sharedPreferences = getSharedPreferences();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("step", s);
+        editor.commit();
+    }
+
     public void setCurrentPosition(LatLng pos) {
         currentPosition = pos;
         Station aux = computeNearestStation();
         BusStation busStation = getBusDestination();
+        int step = getStep();
+
+        Log.e("EVENTS MANAGER", "STEP: " + step);
 
         if (currentStation != null && !currentStation.equals(aux)) {
             lastStation = currentStation;
         }
+
         currentStation = aux;
         double distance = currentStation.getDistance(getCurrentPosition());
-        Log.e("EVENTESMANAGER:", "Distance From nearest station: " + distance);
         if (step < FIRST_STATION) {
             mapsFragment.setStation(currentStation, true);
         } else {
             mapsFragment.setStation(currentStation, false);
         }
 
-        if (step < FIRST_STATION && distance < ON_STATION_DISTANCE) {
+        if (step == START && distance < ON_STATION_DISTANCE) {
             step = FIRST_STATION;
-            notifyUser("STEP", "FIRST_STATION");
-        } else if (
-            step >= EventsManager.FIRST_STATION &&
-            step < EventsManager.NEAR_UNISINOS_STATION &&
-            (isNearFromUnisinos() || currentStation.equals(unisinosStation))
-        ) {
+        } else if (isUnisinosNextStation()) {
             notifyUser(
                 mapsFragment.getResources().getString(R.string.near_unisinos_station_title),
                 mapsFragment.getResources().getString(R.string.near_unisinos_message)
             );
             step = EventsManager.NEAR_UNISINOS_STATION;
         } else if (step == NEAR_UNISINOS_STATION && distance < 50) {
-            notifyUser("STEP", "AT_UNISINOS_STATION");
             step = AT_UNISINOS_STATION;
         } else if (step == AT_UNISINOS_STATION && distance > 50) {
-            notifyUser("STEP", "ON_BUS");
             step = ON_BUS;
-        } else if (step == ON_BUS && busStation != null && busStation.getDistance(currentPosition) <= 10) {
-            notifyUser("STEP", "ON_BUS");
+        } else if (step == ON_BUS && busStation != null && busStation.getDistance(currentPosition) <= 60) {
+            notifyUser(
+                mapsFragment.getResources().getString(R.string.near_bus_station_title),
+                mapsFragment.getResources().getString(R.string.near_bus_message)
+            );
             step = ARRIVE;
         }
 
-        if (step >= START) {
-            mapsFragment.setArriveTime(getTimeUntilDestination(), arriveAtUniStation, nextBus);
+        setArriveTime();
+        Log.e("EventsManager", "SETTING STEP " + step);
+        setStep(step);
+    }
+
+    public void setArriveTime() {
+        if (getStep() >= START) {
+            mainActivity.setArriveTime(getTimeUntilDestination(), arriveAtUniStation, nextBus);
 
         }
     }
 
+    public boolean isUnisinosNextStation() {
+        int step = getStep();
+        return step >= EventsManager.FIRST_STATION &&
+                step < EventsManager.NEAR_UNISINOS_STATION &&
+                (isNearFromUnisinos() || currentStation.equals(unisinosStation));
+    }
 
 
-    public void start() {
-        if (step < START) {
-            step = EventsManager.START;
+
+    public void toggle() {
+        int step = getStep();
+        if (step >= START) {
+            setStep(WAITING);
+        } else if (step == WAITING) {
+            setStep(START);
         }
     }
 
@@ -236,7 +267,7 @@ public class EventsManager {
 
 
     public void notifyUser(String title, String msg) {
-        Activity a = mapsFragment.getActivity();
+        Activity a = mainActivity;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(a)
                         .setSmallIcon(R.drawable.small_icon)
@@ -262,9 +293,12 @@ public class EventsManager {
     }
 
     private MyTime getTimeUntilDestination() {
-        Log.e("EVENTSMANAGER", "GetTimeUntileDestination");
         MyTime result = MyTime.currentTime();
+        if (currentStation == null) {
+            return null;
+        }
         double distance = currentStation.getDistance(currentPosition);
+        int step = getStep();
         if (
                 currentStation != null &&
                 (
@@ -292,13 +326,19 @@ public class EventsManager {
             arriveAtUniStation = null;
         }
         Schedule schedule = Schedule.get(Schedule.BUS);
-        if (step < ON_BUS ) {
+        if (step < ON_BUS) {
             result = schedule.getNext(result);
-            nextBus = result.clone();
+            if (result != null) {
+                nextBus = result.clone();
+            } else {
+                nextBus = null;
+            }
         } else {
             nextBus = null;
         }
-        result.add(getBusTime());
+        if (result != null) {
+            result.add(getBusTime());
+        }
 
         return result;
     }
@@ -306,7 +346,8 @@ public class EventsManager {
     private int getBusTime() {
         BusStation b = getBusDestination();
         int time = 0;
-        Log.e("EVENTSMANAGER", "GetBusTime");
+        int step = getStep();
+
         if (b != null) {
             time = b.getTimeFrom();
             if (step == ON_BUS) {
@@ -315,7 +356,6 @@ public class EventsManager {
                 time = (int)(time * currentDistance / fullDistance);
             }
         }
-        Log.e("EVENTSMANAGER", "TIME: "+ time);
 
         return time;
     }
@@ -334,12 +374,19 @@ public class EventsManager {
         return b;
     }
 
+    public void setSectorPos(int pos) {
+        SharedPreferences sharedPreferences = getSharedPreferences();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("sector", pos);
+        editor.commit();
+    }
+
+    public int getSectorPos() {
+        return getSharedPreferences().getInt("sector",0);
+    }
+
     private String getDestination() {
-        Spinner s = (Spinner)mapsFragment.getActivity().findViewById(R.id.spinner);
-        if (s == null) {
-            return null;
-        }
-        int selectedItem = s.getSelectedItemPosition();
+        int selectedItem = getSectorPos();
         String result;
         switch (selectedItem) {
             case 1:
