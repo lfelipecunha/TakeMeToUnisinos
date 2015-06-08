@@ -49,7 +49,11 @@ public class MapsFragment extends Fragment {
 
 
     public void setStation(Station station, boolean nextTrain) {
-        TextView text = (TextView)getActivity().findViewById(R.id.station);
+        MainActivity mainActivity = (MainActivity)getActivity();
+        if (mainActivity == null) {
+            return;
+        }
+        TextView text = (TextView)mainActivity.findViewById(R.id.station);
         if (text != null) {
             text.setText(station.getName());
         }

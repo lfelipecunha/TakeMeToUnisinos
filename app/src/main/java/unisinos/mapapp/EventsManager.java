@@ -163,8 +163,8 @@ public class EventsManager {
             step = FIRST_STATION;
         } else if (isUnisinosNextStation()) {
             notifyUser(
-                mapsFragment.getResources().getString(R.string.near_unisinos_station_title),
-                mapsFragment.getResources().getString(R.string.near_unisinos_message)
+                "Hey",
+                "You have to get off at the next station!"
             );
             step = EventsManager.NEAR_UNISINOS_STATION;
         } else if (step == NEAR_UNISINOS_STATION && distance < 50) {
@@ -173,8 +173,8 @@ public class EventsManager {
             step = ON_BUS;
         } else if (step == ON_BUS && busStation != null && busStation.getDistance(currentPosition) <= 60) {
             notifyUser(
-                mapsFragment.getResources().getString(R.string.near_bus_station_title),
-                mapsFragment.getResources().getString(R.string.near_bus_message)
+                "Hey",
+                "You have to get off at the next station!"
             );
             step = ARRIVE;
         }
