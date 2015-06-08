@@ -75,7 +75,7 @@ public class MapsFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        //mMapView.onPause();
     }
 
     @Override
